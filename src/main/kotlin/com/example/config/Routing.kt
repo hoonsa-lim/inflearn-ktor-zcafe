@@ -16,15 +16,13 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
 
-        route("/api"){
-            get("/menus"){
+        route("/api") {
+            get("/menus") {
                 val list = menuList
                 call.respond(list)
             }
-
-            post("/orders"){
+            post("/orders") {
                 val request = call.receive<OrderDto.CreateRequest>()
-
                 val selectedMenu = menuList.first { it.id == request.menuId }
                 val order = OrderDto.DisplayResponse(
                     orderCode = "ordercode1",
@@ -51,7 +49,6 @@ fun Application.configureRouting() {
                     orderedAt = LocalDateTime.now(),
                     id = 1,
                 )
-
                 call.respond(order)
             }
         }
