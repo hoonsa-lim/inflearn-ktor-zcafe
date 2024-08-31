@@ -21,4 +21,9 @@ class OrderDto {
         val orderedAt: LocalDateTime,
         var id: Long? = null,
     )
+
+    @Serializable
+    data class UpdateStatusRequest(
+        val status: CafeOrderStatus,
+    )
 }

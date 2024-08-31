@@ -19,3 +19,5 @@ fun Application.configureSecurity(){
         }
     }
 }
+
+fun ApplicationCall.authenticatedUser(): AuthenticatedUser = authentication.principal<AuthenticatedUser>()!!

@@ -8,6 +8,7 @@ import com.example.domain.repository.CafeOrderRepository
 import com.example.domain.repository.CafeUserRepository
 import com.example.service.LoginService
 import com.example.service.MenuService
+import com.example.service.OrderService
 import com.example.service.UserService
 import com.example.shared.BCryptPasswordEncoder
 import io.ktor.server.application.*
@@ -26,6 +27,7 @@ val appModule = module {
     single { UserService(get(), get()) }
     single { LoginService(get(), get()) }
     single { MenuService(get()) }
+    single { OrderService(get(), get(), get()) }
 }
 
 fun Application.configureDependencyInjection() {
