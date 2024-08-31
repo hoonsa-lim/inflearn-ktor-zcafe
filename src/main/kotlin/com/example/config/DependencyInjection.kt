@@ -20,8 +20,8 @@ val appModule = module {
     single { MenuService(get()) }
 }
 
-fun Application.configureDependencyInjection(){
-    install(Koin){
+fun Application.configureDependencyInjection() {
+    install(Koin) {
         slf4jLogger()
         modules(appModule)
     }
