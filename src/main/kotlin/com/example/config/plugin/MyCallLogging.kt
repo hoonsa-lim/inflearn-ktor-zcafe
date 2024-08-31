@@ -1,8 +1,7 @@
 package com.example.config.plugin
 
-import io.ktor.content.*
 import io.ktor.http.*
-import io.ktor.http.content.TextContent
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.util.logging.*
@@ -33,13 +32,13 @@ suspend fun format(call: ApplicationCall, body: Any): String {
         .replace("\n", "")
         .replace(" ", "")
 
-    val bodyStr = if (body is TextContent){
+    val bodyStr = if (body is TextContent) {
         "Response: ${body.text}"
-    }else {
+    } else {
         ""
     }
 
-    val request = "Request: $method $uri $requestBody"
+    val request = "Request: $method $uri, $requestBody"
     val status = "${call.response.status()?.value ?: ""}"
     val log = listOf(request, status, bodyStr).filter { it.isNotBlank() }.joinToString("\n")
 

@@ -11,6 +11,7 @@ fun Application.module() {
     configureDatabase()
     configureDependencyInjection()
     configureHttp()
+    configureSession()
     configureSerialization()
     configureRouting()
     configureLogging()
