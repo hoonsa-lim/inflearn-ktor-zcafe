@@ -46,6 +46,8 @@ private fun initData() {
             CafeUserTable,
             CafeOrderTable,
         )
+
+        execInBatch(dummyQueryList)
     }
 }
 

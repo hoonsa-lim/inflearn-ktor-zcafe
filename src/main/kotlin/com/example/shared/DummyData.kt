@@ -1,6 +1,5 @@
 package com.example.shared
 
-
 val dummyQueryList = listOf(
     "insert into cafe_menu (menu_name, price, category, image) values ('아메리카노(HOT)', 3800, 'COFFEE', 'https://bucket-ogntr9.s3.ap-northeast-2.amazonaws.com/%EC%B9%B4%ED%8E%98%EB%A9%94%EB%89%B4/%E1%84%8B%E1%85%A1%E1%84%86%E1%85%A6%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A1%E1%84%82%E1%85%A9(HOT).jpg');",
     "insert into cafe_menu (menu_name, price, category, image) values ('아메리카노(ICE)', 3800, 'COFFEE', 'https://bucket-ogntr9.s3.ap-northeast-2.amazonaws.com/%EC%B9%B4%ED%8E%98%EB%A9%94%EB%89%B4/%E1%84%8B%E1%85%A1%E1%84%86%E1%85%A6%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A1%E1%84%82%E1%85%A9(ICE).jpg');",
