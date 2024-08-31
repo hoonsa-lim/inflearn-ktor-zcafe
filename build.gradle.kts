@@ -32,11 +32,11 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
-    implementation("com.h2database:h2:$h2_version")
-    implementation("com.zaxxer:HikariCP:$hikaricp_version")
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")       //orm
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")       //orm
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")       //orm
+    implementation("com.h2database:h2:$h2_version")                                     //db
+    implementation("com.zaxxer:HikariCP:$hikaricp_version")                             //커넥션 풀 관리
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
