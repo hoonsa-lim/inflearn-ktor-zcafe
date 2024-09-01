@@ -7,6 +7,8 @@ import com.example.domain.model.CafeOrder
 import com.example.shared.CafeOrderStatus
 import com.example.shared.dummyMenuQueryList
 import com.example.shared.dummyUserQueryList
+import com.example.shared.getPropertyBoolean
+import com.example.shared.getPropertyString
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
@@ -26,7 +28,9 @@ import kotlin.random.Random
 fun Application.configureDatabase() {
     configureH2()
     connectDatabase()
-    initData()
+    if (getPropertyBoolean("db.initData", false)) {
+        initData()
+    }
 }
 
 //h2: in memory db
@@ -47,6 +51,18 @@ fun Application.configureH2() {
 }
 
 
+private fun Application.connectDatabase() {
+    val config =
+        HikariConfig().apply {
+            jdbcUrl = getPropertyString("db.jdbcUrl")
+            driverClassName = getPropertyString("db.driverClassName")
+            validate()
+        }
+
+    val dataSource = HikariDataSource(config)
+    Database.connect(dataSource)
+}
+
 private fun initData() {
     transaction {
         addLogger(StdOutSqlLogger)      //log 추가
@@ -60,18 +76,6 @@ private fun initData() {
         execInBatch(dummyMenuQueryList)
         batchInsertOrder()
     }
-}
-private fun connectDatabase() {
-    val dbName = "cafedb"
-
-    val config = HikariConfig().apply {
-        jdbcUrl = "jdbc:h2:mem:$dbName"
-        driverClassName = "org.h2.Driver"
-        validate()
-    }
-
-    val dataSource = HikariDataSource(config)
-    Database.connect(dataSource)
 }
 
 private fun batchInsertOrder(): List<ResultRow> {
