@@ -21,7 +21,7 @@ data class CafeOrder(
 ) : BaseModel {
 
     fun update(status: CafeOrderStatus) {
-        if (this.status.finished){
+        if (this.status.finished) {
             throw CafeException(ErrorCode.BAD_REQUEST, "주문 상태를 변경할 수 없습니다.")
         }
 

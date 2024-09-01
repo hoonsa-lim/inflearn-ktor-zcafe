@@ -11,7 +11,8 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import org.koin.ktor.ext.inject
 
-fun Route.userRoute(){
+
+fun Route.userRoute() {
     val loginService by inject<LoginService>()
 
     get("/me") {

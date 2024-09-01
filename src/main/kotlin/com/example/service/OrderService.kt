@@ -16,43 +16,39 @@ class OrderService(
     private val userService: UserService,
     private val cafeOrderRepository: CafeOrderRepository,
 ) {
-    fun createOrder(request: OrderDto.CreateRequest, authenticatedUser: AuthenticatedUser): String {
-        val menu = menuService.getMenu(request.menuId)
+    fun createOrder(
+        createRequest: OrderDto.CreateRequest,
+        authenticatedUser: AuthenticatedUser,
+    ): String {
+        val menu = menuService.getMenu(createRequest.menuId)
         val order = CafeOrder(
-            orderCode = "OC${UUID.randomUUID()}",
-            cafeMenuId = menu.id!!,
             cafeUserId = authenticatedUser.userId,
+            cafeMenuId = menu.id!!,
             price = menu.price,
             status = CafeOrderStatus.READY,
             orderedAt = LocalDateTime.now(),
+            orderCode = "OC${UUID.randomUUID()}"
         )
-
-        cafeOrderRepository.create(order)
-
-        return order.orderCode
+        return cafeOrderRepository.create(order).orderCode
     }
 
-    fun getOrder(orderCode: String, authenticatedUser: AuthenticatedUser): OrderDto.DisplayResponse {
+    fun getOrder(
+        orderCode: String,
+        authenticatedUser: AuthenticatedUser,
+    ): OrderDto.DisplayResponse {
         val order = getOrderByCode(orderCode)
-        checkOrderOwner(order, authenticatedUser)
 
-        val menu = menuService.getMenu(order.cafeMenuId)
-        val user = userService.getUser(order.cafeUserId)
+        checkOrderOwner(authenticatedUser, order)
 
         return OrderDto.DisplayResponse(
             orderCode = order.orderCode,
-            menuName = menu.name,
-            customerName = user.nickname,
+            menuName = menuService.getMenu(order.cafeMenuId).name,
+            customerName = userService.getUser(order.cafeUserId).nickname,
             price = order.price,
             status = order.status,
             orderedAt = order.orderedAt,
-            id = null
+            id = null // 명시적 null
         )
-    }
-
-    private fun getOrderByCode(orderCode: String): CafeOrder {
-        return cafeOrderRepository.findByCode(orderCode)
-            ?: throw CafeException(ErrorCode.ORDER_NOT_FOUND)
     }
 
     fun updateOrderStatus(
@@ -61,30 +57,42 @@ class OrderService(
         authenticatedUser: AuthenticatedUser,
     ) {
         val order = getOrderByCode(orderCode)
-        checkOrderOwner(order, authenticatedUser)
+
+        checkOrderOwner(authenticatedUser, order)
         checkCustomerAction(authenticatedUser, status)
+
         order.update(status)
         cafeOrderRepository.update(order)
     }
 
+    private fun checkOrderOwner(
+        authenticatedUser: AuthenticatedUser,
+        order: CafeOrder,
+    ) {
+        if (authenticatedUser.isOnlyCustomer()) {
+            if (authenticatedUser.userId != order.cafeUserId) {
+                throw CafeException(ErrorCode.FORBIDDEN)
+            }
+        }
+    }
+
     private fun checkCustomerAction(
         authenticatedUser: AuthenticatedUser,
-        status: CafeOrderStatus
+        status: CafeOrderStatus,
     ) {
-        if (authenticatedUser.userRoles == listOf(CafeUserRole.CUSTOMER)) {
+        if (authenticatedUser.isOnlyCustomer()) {
             if (status != CafeOrderStatus.CANCEL) {
                 throw CafeException(ErrorCode.FORBIDDEN)
             }
         }
     }
 
-    private fun checkOrderOwner(
-        order: CafeOrder,
-        authenticatedUser: AuthenticatedUser
-    ) {
-        if (order.cafeUserId != authenticatedUser.userId) {
-            throw CafeException(ErrorCode.FORBIDDEN)
-        }
+    private fun getOrderByCode(orderCode: String): CafeOrder {
+        return cafeOrderRepository.findByCode(orderCode)
+            ?: throw CafeException(ErrorCode.ORDER_NOT_FOUND)
     }
 
+    fun getOrders(): List<OrderDto.DisplayResponse> {
+        return cafeOrderRepository.findByOrders()
+    }
 }
